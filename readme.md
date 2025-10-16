@@ -1,12 +1,23 @@
-Project to to record/playback, and mess around with CAN data for the purpose of decoding and controlling functionality of CAN bus devices. 
+# CAN Stream Recorder and Playback Tool for Arduino
 
-E.g. Controlling an 8th Gen Honda Civic Si tachometer, for various projects (e.g. sim racing, a clock, etc) via emulating Honda "F-CAN" bus. 
+Project to record, playback, and pipe CSV files containing CAN data to CAN bus for the purpose of decoding and controlling CAN devices. 
 
-At its heart, this project is powered by an Arduino UNO R3 with a Seeed Studio CAN Shield V2.
+At its heart, this project is powered by an Arduino UNO R3 with a Seeed Studio CAN Shield V2, connected to a PC over serial.
 
-This repo is a collection of scripts and testing sketches which can be used on any vehicle (accessible using pins on OBD2 port).
+## Record:
+- Load `/sketches/can_to_csv/can_to_csv.ino`
+- Connect shield to CAN bus
+- Connect to terminal emulator that supports logging (e.g. Tera Term) 
+- Log terminal output to CSV
+- Power up CAN device under test
 
-DISCLAIMER: I am not responsible for any damage to your vehicle by sending messages over an existing CAN bus.
+## Playback:
+- Load `/sketches/csv_to_can/csv_to_can.ino`
+- Run `send.py` with a formatted CSV (see `/data`)
 
-Additional Notes: While this project does not deal with Single Wire CAN (such as Honda "B-CAN" or GMLAN) here's another cool project for SWCAN communications.
-[SWCAN Board - Craig Peacock]()
+## Related Projects:
+1. [8th_Civic_Tachometer - Sneupi]() - Controlling an 8th Gen Honda Civic Si tachometer, for various projects (e.g. sim racing, a clock, etc) via emulating Honda "F-CAN" bus found within the OBD2 plug. 
+2. [SWCAN Board - Craig Peacock]() - Talking with Single Wire CAN (such as Honda "B-CAN", GMLAN, Tesla non-NACS EV chargers)
+
+## DISCLAIMER: 
+I am not responsible for any damage to devices you may send messages to.
