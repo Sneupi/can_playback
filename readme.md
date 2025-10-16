@@ -16,8 +16,8 @@ At its heart, this project is powered by an Arduino UNO R3 with a Seeed Studio C
 - Run `send.py` with a formatted CSV (see `/data`)
 
 ## Related Projects:
-1. [8th_Civic_Tachometer - Sneupi]() - Controlling an 8th Gen Honda Civic Si tachometer, for various projects (e.g. sim racing, a clock, etc) via emulating Honda "F-CAN" bus found within the OBD2 plug. 
-2. [SWCAN Board - Craig Peacock]() - Talking with Single Wire CAN (such as Honda "B-CAN", GMLAN, Tesla non-NACS EV chargers)
+1. [8th_Civic_Tachometer - Sneupi](https://github.com/Sneupi/8th_civic_tachometer) - Controlling an 8th Gen Honda Civic Si tachometer, for various projects (e.g. sim racing, a clock, etc) via emulating Honda "F-CAN" bus found within the OBD2 plug. 
+2. [SWCAN Board - Craig Peacock](https://www.beyondlogic.org/swcan-single-wire-can-transceiver-breakout-board/) - Talking with Single Wire CAN (such as Honda "B-CAN", GMLAN, Tesla non-NACS EV chargers)
 
 ## DISCLAIMER: 
 I am not responsible for any damage to devices you may send messages to.
