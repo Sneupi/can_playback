@@ -10,9 +10,10 @@ ACK = STATUS + b'OK'   # Arduino sends this after each packet (use bytes for com
 READY = STATUS + b'READY'
 TIMEOUT = 2
 
-def send_file(filename, delay_ms, echo):
+def send_file(filename, delay_ms, echo, loop):
     filesize = os.path.getsize(filename)
     sent = 0
+    line = 0
 
     with serial.Serial(PORT, BAUD, timeout=TIMEOUT) as ser:
         
@@ -22,14 +23,19 @@ def send_file(filename, delay_ms, echo):
         while ser.readline().strip() != READY:
             pass
     
-        print(f"Transmitting \"{filename}\" {f' with line delay {delay_ms} ms' if delay_ms else ''}")
+        print(f"Transmitting \"{filename}\"{f' with line delay {delay_ms} ms' if delay_ms else ''}{f' (looping)' if loop else ''}")
 
         with open(filename, 'rb') as f:
             # Do until EOF
             while True:
                 chunk = f.read(CHUNK_SIZE)
                 if not chunk:
-                    break
+                    if not loop:
+                        break
+                    else:
+                        f.seek(0)
+                        line = 0
+                        sent = 0
 
                 # send data chunk
                 ser.write(chunk)
@@ -43,10 +49,11 @@ def send_file(filename, delay_ms, echo):
                     
                 # Print sent updates
                 sent += len(chunk)
+                line += chunk.count(b'\n')
                 if echo:
                     print(chunk.decode('utf-8', errors='replace'), end='')
                 else:
-                    print(f"Sent {sent}/{filesize} bytes ({sent/filesize*100:.1f}%)", end='\r')
+                    print(f"Line {line}: Sent {sent}/{filesize} bytes ({sent/filesize*100:.1f}%)", end='\r')
                 
                 # wait delay
                 if delay_ms > 0:
@@ -59,7 +66,7 @@ def send_file(filename, delay_ms, echo):
 
 if __name__ == "__main__":
     if len(sys.argv) < 4:
-        print("Usage: python send.py <FILENAME> <PORT> <BAUD> [--echo] [--delay=<ms>]")
+        print("Usage: python send.py <FILENAME> <PORT> <BAUD> [--echo] [--loop] [--delay=<ms>]")
         sys.exit(1)
 
     FILENAME = sys.argv[1]
@@ -67,15 +74,18 @@ if __name__ == "__main__":
     BAUD = int(sys.argv[3])
     ECHO = False
     DELAY_MS = 0
+    LOOP = False
 
     for arg in sys.argv[4:]:
         if arg == "--echo":
             ECHO = True
+        elif arg == "--loop":
+            LOOP = True
         elif arg.startswith("--delay="):
             DELAY_MS = int(arg.split("=")[1])
             
     try:        
-        send_file(FILENAME, DELAY_MS, ECHO)  # change file as needed
+        send_file(FILENAME, DELAY_MS, ECHO, LOOP)  # change file as needed
     except FileNotFoundError:
         print(f"File not found: {FILENAME}")
     except KeyboardInterrupt:
